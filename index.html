@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+		<title>Simple User Search App</title>
+		<!-- Custom Fonts -->
+		<link href="https://fonts.googleapis.com/css?family=Open+Sans:300,400,700" rel="stylesheet">
+		<!-- Styles -->
+		<style>
+			*,
+			*:after,
+			*:before {
+				box-sizing: border-box;
+			}
+
+			body {
+				margin: 0;
+				padding: 0;
+				font: 300 16px/26px 'Open Sans', Arial, sans-serif;
+				color: #333;
+			}
+			.user-search-app {
+				padding-top: 50px;
+			}
+			.user-search-app__container {
+				padding-left: 15px;
+				padding-right: 15px;
+			}
+			.user-search-app__search-box {
+
+			}
+			.user-search-app__header {
+				position: fixed;
+				top: 0;
+				left: 0;
+				width: 100%;
+				height: 50px;
+				padding: 10px 0;
+				background: #7362de;
+			}
+			.user-search-app__search-input {
+				width: 100%;
+				height: 30px;
+				padding: 6px 10px;
+				font-size: 14px;
+				line-height: 18px;
+				font-weight: 300;
+				border-radius: 4px;
+				border: 1px solid #5b4db0;
+				outline: none;
+				color: #ddd;
+				background: #5b4db0;
+			}
+			.user-search-app__search-input:focus {
+				background: #fff;
+				color: #555;
+			}
+			.user-search-app__search-input:focus::-webkit-input-placeholder {
+				color: #555;
+			}
+			.user-search-app__search-input::-webkit-input-placeholder {
+				color: #b8aff0;
+			}
+			.user-search-app__search-input:focus::-moz-placeholder {
+				color: #555;
+			}
+			.user-search-app__search-input::-moz-placeholder {
+				color: #b8aff0;
+			}
+			.user-search-app__search-input:focus:-ms-input-placeholder {
+				color: #555;
+			}
+			.user-search-app__search-input:-ms-input-placeholder {
+				color: #b8aff0;
+			}
+			.user-search-app__search-input:focus::placeholder {
+				color: #555;
+			}
+			.user-search-app__search-input::placeholder {
+				color: #b8aff0;
+			}
+
+			.user-search-app__list {
+				list-style: none;
+				padding: 10px 0 10px 0;
+				margin: 0;
+			}
+			.contact {
+				padding: 15px 0;
+				display: flex;
+				flex-direction: row;
+				border-bottom: 1px solid #f7f7f7;
+			}
+			.contact:last-of-type {
+				border-bottom: none;
+			}
+			.contact__avatar {
+				width: 70px;
+				height: 70px;
+				margin: 0 30px 0 15px;
+				border-radius: 100%;
+				overflow: hidden;
+				line-height: 0;
+				font-size: 0;
+			}
+			.contact__avatar-img {
+				width: 100%;
+			}
+			.contact__descr {
+				max-width: calc(100% - 70px);
+			}
+			.contact__full-name {
+				margin: 5px 0 5px 0;
+				font-size: 18px;
+			    line-height: 26px;
+			    font-weight: 400;
+			    color: #555;
+			}
+			.contact__phone-num {
+				margin: 0;
+				font-size: 14px;
+				line-height: 14px;
+			    font-weight: 400;
+			    color: #111;
+			}
+		</style>
+	</head>
+	<body>
+		<div id="app"></div>
+		<!-- React Core -->
+		<script crossorigin src="https://unpkg.com/react@16/umd/react.development.js"></script>
+		<script crossorigin src="https://unpkg.com/react-dom@16/umd/react-dom.development.js"></script>
+		<!-- Babel Core -->
+		<script src="https://unpkg.com/babel-standalone@6/babel.min.js"></script>
+		<!-- App Core -->
+		<script type="text/babel">
+			const CONTACT_LIST = [
+				{
+					id: 1,
+					fullName: 'Hilario Siemens',
+					phoneNumber: '+79995460234',
+					avatar: '/img/avatar_01.jpg'
+				},
+				{
+					id: 2,
+					fullName: 'Soila Shotts',
+					phoneNumber: '+103845848245',
+					avatar: '/img/avatar_02.jpg'
+				},
+				{
+					id: 3,
+					fullName: 'Ela Petitt',
+					phoneNumber: '+79379872345',
+					avatar: '/img/avatar_03.jpg'
+				},
+				{
+					id: 4,
+					fullName: 'Kathline Larsen',
+					phoneNumber: '+08784347722',
+					avatar: '/img/avatar_04.jpg'
+				},
+				{
+					id: 5,
+					fullName: 'Josie Harney',
+					phoneNumber: '+994995228488',
+					avatar: '/img/avatar_05.jpg'
+				},
+				{
+					id: 6,
+					fullName: 'Arla Crean',
+					phoneNumber: '+84384349922',
+					avatar: '/img/avatar_06.jpg'
+				},
+				{
+					id: 7,
+					fullName: 'Coy Guido',
+					phoneNumber: '+72349990002',
+					avatar: '/img/avatar_07.jpg'
+				},
+				{
+					id: 8,
+					fullName: 'Rueben Demayo',
+					phoneNumber: '+29903459900',
+					avatar: '/img/avatar_08.jpg'
+				}
+			];
+			
+			class SearchSettings extends React.Component {
+				constructor(props) {
+					super(props);
+					this.onChangeSearchValue = this.onChangeSearchValue.bind(this);
+				}
+				onChangeSearchValue(event) {
+					this.props.onChangeSearchValue(event.target.value);
+				}
+
+				render() {
+					const searchValue = this.props.searchValue;
+					return (
+						<div className="user-search-app__search-box">
+							<input  
+								className="user-search-app__search-input"
+								type="text"
+								value={searchValue}
+								onChange={this.onChangeSearchValue}
+								placeholder="Name..."
+							/>
+						</div>
+					);
+				}
+			}
+			class SearchListItem extends React.Component {
+				render() {
+					const avatarUrl = this.props.contact.avatar,
+						  fullName = this.props.contact.fullName,
+						  phoneNumber = this.props.contact.phoneNumber;
+					return (
+						<li className="contact">
+							<div className="contact__avatar">
+								<img className="contact__avatar-img" src={avatarUrl} />
+							</div>
+							<div className="contact__descr">
+								<h4 className="contact__full-name">{fullName}</h4>
+								<h5 className="contact__phone-num">{phoneNumber}</h5>
+							</div>
+						</li>
+					);
+				}
+			}
+			class SearchList extends React.Component {
+				render() {
+					const filterText = this.props.filterText.toLowerCase();
+					const contacts = this.props.contacts;
+					const filteredContacts = [];
+					contacts.forEach( contact => {
+						if (contact.fullName.toLowerCase().indexOf(filterText) !== -1) {
+							filteredContacts.push(
+								<SearchListItem 
+									key={contact.id}
+									contact={contact}
+								/>
+							);
+						}
+					});
+					return (
+						<ul className="user-search-app__list">
+							{filteredContacts}
+						</ul>
+					);
+				}
+			}
+			class UserSearchApp extends React.Component {
+				constructor(props) {
+					super(props);
+
+					this.state = {searchValue: ''};
+					this.handleSearchValueChange = this.handleSearchValueChange.bind(this);
+				}
+				handleSearchValueChange(value) {
+					this.setState({searchValue: value});
+				}
+				render() {
+					return (
+						<div className="user-search-app">
+						<div className="user-search-app__header">
+							<div className="user-search-app__container">
+								<SearchSettings 
+									searchValue={this.state.searchValue}
+									onChangeSearchValue={this.handleSearchValueChange}
+								/>
+							</div>
+						</div>
+						<div className="user-search-app__container">
+							<SearchList
+								filterText={this.state.searchValue}
+								contacts={this.props.contacts}
+							/>
+						</div>
+						</div>
+					);
+				}
+			}
+
+			ReactDOM.render(<UserSearchApp contacts={CONTACT_LIST} />, document.getElementById('app'));
+		</script>
+	</body>
+</html>
